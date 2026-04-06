@@ -17,7 +17,7 @@ from employees
 where phone_number like '%010%';
 
 -- 50번 부서의 직원을 출력해라
-select first_name || ' ' || last_name as "이름"
+select first_name || ' ' || last_name as "이름" -- || : 문자열 연결 연산자
 , phone_number as "전화번호"
 , manager_id
 from employees
@@ -25,9 +25,14 @@ where department_id = 50
 order by "이름" desc;
 
 -- 부서가 없는 직원을 출력
-select *
+select employee_id as "사번",
+first_name || ' ' || last_name as "이름", 
+salary as "급여",
+email as "이메일",
+phone_number as "전화번호",
+department_id
 from employees
-where department_id is null;
+where department_id is null; -- is null
 
 
 

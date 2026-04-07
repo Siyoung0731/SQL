@@ -1,7 +1,7 @@
 -- King 이라는 직원을 출력
 select *
 from employees
-where last_name like '%King%';
+where last_name like '% King%';
 
 --월급순 내림차순으로 직원정보를 출력
 select employee_id as "사번"

@@ -206,6 +206,25 @@ from employees
 where hire_date between '2017-02-06' and '2017-02-07';
 
 select *
+from employees 
+where to_char(hire_date, 'YY/MM/DD') = '17/02/07';
+
+select * 
+from employees
+where to_char(hire_date, 'YY/MM/DD') = '12/06/07';
+-- LIKE 로 '17/02/07'에 입사한 사람 출력
+--     '12/06/07' 에 입사한 사람 출력
+-- 되도록 like는 문자열에만
+select *
+from employees
+where hire_date like '%17-02-07%';
+-- LIKE 로 '17/02/07'에 입사한 사람 출력
+--     '12/06/07' 에 입사한 사람 출력
+select *
+from employees 
+where hire_date like '%12-06-07%';
+
+select *
 from employees
 --where hire_date between '2012-06-06' and '2012-06-07';
 where trunc(hire_date) = '2026-04-07 00:00:00';
@@ -249,11 +268,26 @@ from employees
 where to_char(hire_date, 'DY') = '화'
 order by hire_date asc;
 
+alter session set NLS_DATE_FORMAT= 'YYYY-MM-DD HH24:MI:SS';
+ALTER SESSION SET NLS_DATE_FORMAT= 'YYYY"年"-MM"月"-DD"日" HH24"時"MI"分"SS"秒" AM DAY';
+
 -- 16. 08월 입사자의 사번, 이름, 입사일을 입사일 순으로 
 select employee_id as "사번",
+first_name || ' ' || last_name as "이름",
+hire_date as "입사일"
+from employees
+where to_char(hire_date, 'MM') = '08'
+order by hire_date asc;
 
 -- 부서번호 80이 아닌 직원
+select *
+from employees
+--where department_id <> 80;
+where department_id != 80;
 -- 2025년 07월 09일 10시 05분 04초 오전 수요일
+select *
+from employees
+where to_char(hire_date, 'YYYY"年"-MM"月"-DD"日" HH24"時"MI"分"SS"秒" AM DAY') = '2025-07-09-10:05:04 오전 수요일';
 -- 한자로 출력
 
 

@@ -215,7 +215,183 @@ SQL 문의 실행 순서
 4. ORDER BY
 ------------------------------------------------
 
+부서별 사원수
+select department_id as "부서번호",
+count(*) as "부서별 사원 수"
+from employees
+group by department_id;
 
+select department_id as "부서번호",
+count(employee_id) as "부서별 사원 수"
+from employees
+group by department_id
+having department_id is not null;
+
+select department_id as "부서번호",
+count(*) as "부서별 사원 수",
+sum(salary) as "부서별 월급합"
+from employees
+group by department_id
+having department_id is not null
+order by department_id asc;
+
+-- 부서별 월급합, 월급 평균
+select department_id as "부서번호",
+sum(salary) as "월급합",
+round(avg(salary), 2) as "월급평균"
+from employees
+group by department_id
+having department_id is not null
+order by department_id;
+
+-- 부서별 사원수 통계
+select department_id as "부서번호",
+department_name as "부서명",
+count(*) as "부서별 사원수"
+from departments
+group by department_id, department_name;
+
+-- 부서별 인원수, 월급합
+select department_id as "부서번호",
+count(*) as "부서별 인원수",
+sum(salary)
+from employees
+group by department_id
+order by department_id;
+
+-- 부서별 인원수가 5명 이상인 부서번호
+select department_id as "부서번호",
+count(employee_id) as "부서별 인원수"
+from employees
+group by department_id
+having count(employee_id) >= 5
+order by department_id;
+
+-- 부서별 월급 총계가 20000 이상인 부서번호
+select department_id as "부서번호",
+sum(salary) as "월급 총계"
+from employees
+group by rollup(department_id)
+having sum(salary) >= 20000
+order by department_id;
+
+-- job_id 별 인원수
+select job_id,
+count(job_id) 
+from employees
+group by job_id
+order by job_id;
+
+-- job_TITLE 별 인원수
+select job_id, 
+decode(job_id, 
+'AD_PRES', 'President',
+'AD_VP', 'Administration Vice President',
+'AD_ASST', 'Administration Assistant',
+'FI_MGR', 'Finance Manager',
+'FI_ACCOUNT', 'Accountant',
+'AC_MGR', 'Accounting Manager',
+'AC_ACCOUNT', 'Public Accountant',
+'SA_MAN', 'Sales Manager',
+'SA_REP', 'Sales Representative',
+'PU_MAN', 'Purchasing Manager',
+'PU_CLERK', 'Purchasing Clerk',
+'ST_MAN', 'Stock Manager',
+'ST_CLERK', 'Stock Clerk',
+'SH_CLERK', 'Shipping Clerk',
+'IT_PROG', 'Programmer',
+'MK_MAN', 'Marketing Manager',
+'MK_REP', 'Marketing Representative',
+'HR_REP', 'Human Resources Representative',
+'PR_REP', 'Public Relations Representative',
+'no title'
+) as "job_title",
+count(job_id)
+from employees
+group by job_id;
+
+
+select job_title, count(*)
+from employees e
+join jobs j
+on e.job_id = j.job_id
+group by job_title
+order by job_title;
+
+-- 입사일 기준 월별 인원수, 2017년 기준
+select to_char(hire_date, 'MM') as "입사일",
+count(employee_id) as "월별 인원수"
+from employees
+where to_char(hire_date, 'YYYY') = '2017'
+group by to_char(hire_date, 'MM')
+order by to_char(hire_date, 'MM');
+
+select hire_date as "입사일",
+to_char(hire_date, 'YYYY/MM') as "2017년 기준 월별",
+count(*) as "인원수"
+from employees
+group by hire_date
+having to_char(hire_date, 'YYYY') = '2017'
+order by hire_date;
+
+-- 부서별 최대월급이 14000 이상인 부서의 부서번호와 최대월급
+select department_id as "부서번호",
+max(salary) as "최대월급"
+from employees
+group by department_id
+having max(salary) >= 14000
+order by department_id;
+
+-- 부서별 모으고 같은 부서는 직업별 인원수 , 월급 평균
+select department_id as "부서번호",
+job_id as "직업번호", -- job_title
+decode(job_id, 
+'AD_PRES', 'President',
+'AD_VP', 'Administration Vice President',
+'AD_ASST', 'Administration Assistant',
+'FI_MGR', 'Finance Manager',
+'FI_ACCOUNT', 'Accountant',
+'AC_MGR', 'Accounting Manager',
+'AC_ACCOUNT', 'Public Accountant',
+'SA_MAN', 'Sales Manager',
+'SA_REP', 'Sales Representative',
+'PU_MAN', 'Purchasing Manager',
+'PU_CLERK', 'Purchasing Clerk',
+'ST_MAN', 'Stock Manager',
+'ST_CLERK', 'Stock Clerk',
+'SH_CLERK', 'Shipping Clerk',
+'IT_PROG', 'Programmer',
+'MK_MAN', 'Marketing Manager',
+'MK_REP', 'Marketing Representative',
+'HR_REP', 'Human Resources Representative',
+'PR_REP', 'Public Relations Representative',
+'no title'
+) as "job_title",
+count(job_id) as "직업별 인원수",
+round(avg(salary),2) as "평균월급"
+from employees
+group by rollup(department_id, job_id)
+order by department_id, job_id;
+
+-- rollup(expr1, expr2) : 레벨별로 순차적 집계
+-- cube(expr1, expr2, ...) : 모든 조합별로 집계한 결과를 반환
+
+
+select department_id as "사번",
+sum(salary) as "월급 합계",
+round(avg(salary),2) as "월급 평균"
+from employees
+group by cube(department_id, salary);
+
+
+
+
+
+
+
+
+select substr(department_name, i, n) -- department_name 컬럼의 i번째부터 n개 문자를 출력
+from departments;
 
 
 

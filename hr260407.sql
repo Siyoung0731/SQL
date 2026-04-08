@@ -243,6 +243,7 @@ HH24 : 시 24시 기준
 MI : 분:
 SS : 초 DAY : 요일, DY : 일 
 AM : 오전/오후
+dual : 연산을 수행할 수 있는 임시 공간
 */
 alter session set NLS_DATE_FORMAT= 'YYYY-MM-DD HH24:MI:SS';
 select *
@@ -260,37 +261,89 @@ select employee_id as "사번",
 first_name || ' ' || last_name as "이름",
 hire_date as "입사 후 일주일 이내"
 from employees
-where hire_date <= hire_date + 7;
---
+where hire_date >= sysdate - 7;
+-- where hire_date <= hire_date + 7;
+
+
 -- 15. 화요일 입사자를 출력
 select concat(concat(first_name, ''), last_name), hire_date, to_char(hire_date, 'DY') as "화요일 입사자"
 from employees
 where to_char(hire_date, 'DY') = '화'
 order by hire_date asc;
 
+
 alter session set NLS_DATE_FORMAT= 'YYYY-MM-DD HH24:MI:SS';
 ALTER SESSION SET NLS_DATE_FORMAT= 'YYYY"年"-MM"月"-DD"日" HH24"時"MI"分"SS"秒" AM DAY';
 
+
 -- 16. 08월 입사자의 사번, 이름, 입사일을 입사일 순으로 
+-- select절에서 to_char은 모양을 바꾸는 것
+-- where절에선 to_char은 원하는 결과 값을 출력하고 싶을 때 사용하는 것
 select employee_id as "사번",
 first_name || ' ' || last_name as "이름",
-hire_date as "입사일"
+to_char(hire_date, 'YY-MM-DD') as "입사일"
 from employees
 where to_char(hire_date, 'MM') = '08'
 order by hire_date asc;
+
 
 -- 부서번호 80이 아닌 직원
 select *
 from employees
 --where department_id <> 80;
-where department_id != 80;
+where department_id != 80 or department_id is null;
+
+
 -- 2025년 07월 09일 10시 05분 04초 오전 수요일
-select *
+select hire_date
 from employees
-where to_char(hire_date, 'YYYY"年"-MM"月"-DD"日" HH24"時"MI"分"SS"秒" AM DAY') = '2025-07-09-10:05:04 오전 수요일';
+where to_char(hire_date, 'YYYY年-MM月-DD日 HH24時 MI分 SS秒 AM DAY') = '2025-07-09-10:05:04 오전 수요일';
 -- 한자로 출력
 
+select sysdate, to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS AM DAY'),
+to_char(sysdate, 'AM')
+from dual;
 
+-- 오전/오후 한자 午前 / 午後
+-- 년/월/일 시분초 年,月,日,時,分,秒
+-- 일월화수목금토 日 → 月 → 火 → 水 → 木 → 金 → 土
+-- 요일 曜日
+-- 1. to_char() 활용
+select sysdate, to_char(sysdate, 'YYYY"年"MM"月"DD"日" HH24"時"MI"分"SS"秒" AM DAY') as "날짜1",
+to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS AM DAY') as "날짜2",
+to_char(sysdate, 'AM')
+from dual;
+-- 2. if를 구현 -> oracle 기준 : DECODE() 
+-- 2-1) NVL(), NVL2()
+------- 사번, 이름, 월급, COMMISSION_PCT(단 값이 NULL이면 0이라고 출력)
+------------- NVL ------------------
+select employee_id as "사번", 
+first_name || ' ' || last_name as "이름",
+salary as "월급",
+NVL(COMMISSION_PCT, 0) as "보너스"
+from employees;
+------------- NVL2(expr1, expr2, expr3) : expr1이 null이면 expr3 반환, null이 아니면 expr2 반환 -----------------
+select employee_id as "사번", 
+first_name || ' ' || last_name as "이름",
+salary as "월급",
+NVL2(commission_pct, salary + (salary * commission_pct),salary) as "보너스"
+from employees;
+
+-- 2-2) NULLIF()
+
+-- 2-3)decode()
+-- 3. case when-then end
+
+---------------------------------------------------------------------------------------------------
+-- 앞으로 날짜 표현은 다음과 같이 표현하지 
+
+select employee_id, hire_date
+from employees
+where to_char(hire_date, 'YYYY-MM-DD') = '2015-09-21';
+
+select employee_id as "사번", hire_date as "입사일"
+from employees
+where to_char(hire_date, 'YYYY-MM') = '2026-04';
 
 
 

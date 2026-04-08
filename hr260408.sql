@@ -106,7 +106,7 @@ from employees;
 
 --- 집개 함수 : AGGREGATE 함수
 -- 모든 집계함수는 NULL값을 포함하지 않는다.
--- SUM(), AVG(), MIN(), MAX(), COUNT(), VARIANCE()
+-- 합계 : SUM(),평균: AVG(),최저: MIN(),최고: MAX(),줄수: COUNT(),표준편차: VARIANCE()
 -- GROUP BY : 그루핑
 
 select count(*) from employees;
@@ -142,21 +142,101 @@ where department_id = 60; -- 5760
 -- employees 테이블에서 부서 수
 select department_id -- count() : null 값을 제외
 from employees;
+
 -- 중복을 제거한 부서의 수를 출력 count(distinct(department_id))
 -- 중복을 제거한 부서번호 리스트 : null 출력함
 select distinct(department_id)
 from employees;
 select count(distinct(department_id))
 from employees;
+
 -- 직원이 근무하는 부서의 수 : 부서장이 있는 부서수 : departments
-select count(department_name)
+select count(department_id) as "직원이 근무하는 부서의 수"
 from departments
-where ;
+where manager_id is not null ;
+
+-- round(val, n) : val 값의 지정한 자리에서 반올림
+-- trunc(val, n) : val 값의 지정한 자리 버리기
+
 -- 직원수, 월급합, 월급평균, 최대 월급 , 최소월급
+select count(employee_id) as "직원수",
+sum(salary) as "월급 총합",
+trunc(avg(salary)) as "월급 평균",
+max(salary) as "최대 월급",
+min(salary) as "최소 월급"
+from employees;
 
 -- 부서 60번 부서 인원수, 월급합, 월급평균
+select count(department_id) as "60번 부서 인원수",
+sum(salary) as "월급합",
+trunc(avg(salary)) as "월급평균"
+from employees
+where department_id = 60;
 
 -- 부서 50, 60, 80번 부서가 아닌 인원수, 월급합, 월급평균
+select department_id as "부서번호",
+count(*) as "부서별 수",
+sum(salary) as "월급합",
+trunc(avg(salary)) as "월급평균"
+from employees
+where department_id not in(50, 60, 80)
+group by department_id;
+
+select count(*) as "부서별 수",
+sum(salary) as "월급합",
+trunc(avg(salary)) as "월급평균"
+from employees
+where department_id <> 50 and department_id <> 60 and department_id <> 80;
+
+select department_id as "부서번호",
+count(*) as "부서별 수",
+sum(salary) as "월급합",
+trunc(avg(salary)) as "월급평균"
+from employees
+where department_id not in(50, 60, 80)
+group by department_id;
+
+select count(department_id)
+from employees
+where department_id in (10, 20, 40, 70, 90, 100, 110);
+
+select count(department_id)
+from employees
+where department_id in (50, 60, 80);
+
+select count(department_id)
+from employees;
+
+------------------------------------------------
+SQL 문의 실행 순서
+1. FROM
+2. WHERE
+3. SELECT
+4. ORDER BY
+------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ------- greatest() : 매개변수로 들어오는 값들 중 가장 큰 값
 ------- least() : 가장 작은 값을 반환

@@ -293,12 +293,30 @@ from employees
 --where department_id <> 80;
 where department_id != 80 or department_id is null;
 
-
+-- 오전/오후 한자 午前 / 午後
+-- 년/월/일 시분초 年,月,日,時,分,秒
+-- 일월화수목금토 日 → 月 → 火 → 水 → 木 → 金 → 土
+-- 요일 曜日
 -- 2025년 07월 09일 10시 05분 04초 오전 수요일
-select hire_date
-from employees
-where to_char(hire_date, 'YYYY年-MM月-DD日 HH24時 MI分 SS秒 AM DAY') = '2025-07-09-10:05:04 오전 수요일';
 -- 한자로 출력
+select to_char(sysdate, 'YYYY') || '年' ||
+to_char(sysdate, 'MM') || '月' || 
+to_char(sysdate, 'DD') || '日' ||
+to_char(sysdate, 'HH12') || '時' ||
+to_char(sysdate, 'MI') || '分' ||
+to_char(sysdate, 'SS') || '秒' ||
+case to_char(sysdate, 'DY') 
+when '일' then '日'
+when '월' then '月'
+when '화' then '火'
+when '수' then '水'
+when '목' then '木'
+when '금' then '金'
+when '토' then '土'
+end || '曜日' ||
+decode(to_char(sysdate, 'AM'), '오전', '午前', '午後')
+from dual;
+-------------------------------------
 
 select sysdate, to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS AM DAY'),
 to_char(sysdate, 'AM')

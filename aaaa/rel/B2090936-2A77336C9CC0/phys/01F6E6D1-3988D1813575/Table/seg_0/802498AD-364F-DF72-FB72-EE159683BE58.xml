@@ -1,0 +1,53 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="COUNTRIES" directorySegmentName="seg_0" id="802498AD-364F-DF72-FB72-EE159683BE58">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:51 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+<schemaObject>BE57DA3B-4D41-B41F-807E-E57609B2AD88</schemaObject>
+<iotPctThreshold>50</iotPctThreshold>
+<logging>YES</logging>
+<organization>INDEX</organization>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>A5599B5F-D076-0819-C576-62D2AE59F37B</segment>
+<tableSpace>B9713FF8-FC1E-C734-88FA-103D32970AAE</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="COUNTRY_NAME" id="5B4B89F9-DCC8-9794-056C-BAB8785DDDF7">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:52 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="REGION_ID" id="98764080-F9CC-471D-A524-633C38E4F96D">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:52 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="COUNTRY_ID" id="AA5A5383-1F9B-06EA-7754-494A7121D0B8">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:52 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="COUNTR_REG_FK" id="9FC03D38-ACB7-7579-7F48-91A500462B19">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:55 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="COUNTRY_C_ID_PK" id="4B6DC5ED-A509-64D4-1B07-14F1B7E2E555">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 02:39:54 UTC</createdTime>
+<ownerDesignName>aaaa</ownerDesignName>
+<schemaObject>BE57DA3B-4D41-B41F-807E-E57609B2AD88</schemaObject>
+<segment>A5599B5F-D076-0819-C576-62D2AE59F37B</segment>
+<tableSpace>B9713FF8-FC1E-C734-88FA-103D32970AAE</tableSpace>
+<indexSegment>A5599B5F-D076-0819-C576-62D2AE59F37B</indexSegment>
+<indexSort>SORTED</indexSort>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>

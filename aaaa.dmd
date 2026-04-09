@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="aaaa" id="EB1EF8C0-0298-97AD-3985-8D8FADCCECA3" version="3.5">
+<createdBy>GGG</createdBy>
+<createdTime>2026-04-06 01:27:14 UTC</createdTime>
+<ownerDesignName>hrERD</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>EB1EF8C0-0298-97AD-3985-8D8FADCCECA3</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="B5795057-6677-1F65-A133-4CE5A6961386">
+<designStoragePath>D:\</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="40470810-5646-213D-E85D-3A271E134271">
+<designStoragePath>D:\</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="9A0E0C88-BEDF-E49C-FFED-79317A0981B5">
+<designStoragePath>D:\</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="EB1EF8C0-0298-97AD-3985-8D8FADCCECA3">
+<designStoragePath>D:\dev\SQL - 데이터베이스\sql\hrERD</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="B217D388-F872-D934-6289-C71B2F67FAC2">
+<designStoragePath>D:\dev\SQL - 데이터베이스\sql</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>

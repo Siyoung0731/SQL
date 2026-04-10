@@ -316,13 +316,7 @@ from employees
 union
 select department_id as "부서번호"
 from departments 
-union
-select job_title as "담당업무"
-from jobs 
-union
-select to_char(start_date, 'YYYY"년" MM"월" DD"일"') as "업무시작일",
-to_char(end_date, 'YYYY"년" MM"월" DD"일"') as "업무종료일"
-from job_history;
+
 
 -------------------------------------------------
 결합 연산자 : 줄 단위 결합

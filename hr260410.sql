@@ -361,5 +361,61 @@ SELECT
 FROM
     dual;
 
+select * 
+from (
+select row_number() over(order by salary desc nulls last) rn,
+e.employee_id, 
+e.first_name, 
+e.last_name, 
+e.salary,
+s.grade,
+RANK() over(order by salary desc) rk
+from employees e
+join salgrade s
+on e.salary between s.losal and s.highsal
+) T
+where t.rn between 1 and 10;
+    
+select * 
+from ( select e.employee_id 사번,
+       concat(concat(first_name, ' '), last_name) 이름,
+       e.salary 월급,
+       s.grade 등급,
+       rank() over(order by salary desc nulls last) rk
+       from employees e
+       join salgrade s
+       on e.salary between s.losal and s.highsal
+       ) T
+where t.rk between 1 and 10;
+       
+select * 
+from (
+select row_number() over(order by salary desc nulls last) rn,
+e.employee_id, 
+e.first_name, 
+e.last_name, 
+e.salary,
+s.grade,
+RANK() over(order by salary desc) rk
+from employees e
+join salgrade s
+on e.salary between s.losal and s.highsal
+) T
+where t.rn between 1 and 10;
+
+select *
+from ( 
+select row_number() over(order by salary desc nulls last) rn,
+e.employee_id 사번,
+concat(concat(first_name, ' '), last_name) 직원명,
+e.salary 월급, 
+s.grade 등급,
+rank() over(order by salary desc) rk
+from employees e
+join salgrade s
+on e.salary between s.losal and s.highsal
+) T
+where t.rk between 1 and 10;
+
 
 

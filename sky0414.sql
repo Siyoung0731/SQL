@@ -256,8 +256,135 @@ GROUP BY ST.STID, ST.STNAME;
 
 
 -------------------------------------------------------------------
-5. 모든 학생의 학번, 이름, 총점, 평균, 등급, 석차
+-- 모든 학생의 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+
+
+
+-- 모든 학생의 학번, 이름, 총점, 평균, 등급, 석차
 -- 점수가 NULL인 학생은 미응시
+1. ORACLE  10G 방식
+1-1) 학번, 국어, 영어, 수학
+SELECT SC.STID 학번,
+DECODE(SC.SUBJECT, '국어', SC.SCORE) 국어,
+DECODE(SC.SUBJECT, '영어', SC.SCORE) 영어,
+DECODE(SC.SUBJECT, '수학', SC.SCORE) 수학
+FROM SCORES SC;
+-------------------------------------------------------
+1-2) 학번, 국어, 영어, 수학
+SELECT SC.STID 학번,
+SUM(DECODE(SC.SUBJECT, '국어', SC.SCORE)) 국어,
+SUM(DECODE(SC.SUBJECT, '영어', SC.SCORE)) 영어,
+SUM(DECODE(SC.SUBJECT, '수학', SC.SCORE)) 수학
+FROM SCORES SC
+GROUP BY SC.STID;
+---------------------------------------------------
+1-3) 학번, 이름, 국어, 영어, 수학 : JOIN
+SELECT ST.STID 학번, ST.STNAME 이름,
+SUM(DECODE(SC.SUBJECT, '국어', SC.SCORE)) 국어,
+SUM(DECODE(SC.SUBJECT, '영어', SC.SCORE)) 영어,
+SUM(DECODE(SC.SUBJECT, '수학', SC.SCORE)) 수학
+FROM STUDENT ST
+LEFT JOIN SCORES SC
+ON ST.STID = SC.STID
+GROUP BY ST.STID, ST.STNAME
+ORDER BY ST.STID, ST.STNAME;
+---------------------------------------------------
+1-4) 모든 학생의 학번, 이름, 국어, 영어, 수학, 총점, 평균
+SELECT ST.STID 학번, ST.STNAME 이름,
+SUM(DECODE(SC.SUBJECT, '국어', SC.SCORE)) 국어,
+SUM(DECODE(SC.SUBJECT, '영어', SC.SCORE)) 영어,
+SUM(DECODE(SC.SUBJECT, '수학', SC.SCORE)) 수학,
+SUM(SC.SCORE) 총점,
+ROUND(AVG(SC.SCORE), 2) 평균
+FROM STUDENT ST
+LEFT JOIN SCORES SC
+ON ST.STID = SC.STID
+GROUP BY ST.STID, ST.STNAME
+ORDER BY ST.STID, ST.STNAME;
+----------------------------------------------------------------
+1-5)학생의 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+-- 미응시
+-- 등급 : 비등가 조인으로 해결
+    CREATE TABLE SCGRADE 
+    (
+        GRADE VARCHAR2(1) PRIMARY KEY,
+        LOSCORE NUMBER(6, 2),
+        HIGHSCORE NUMBER(6, 2)
+    );
+INSERT INTO SCGRADE VALUES('A', 90, 100);
+INSERT INTO SCGRADE VALUES('B', 80, 89.99);
+INSERT INTO SCGRADE VALUES('C', 70, 79.99);
+INSERT INTO SCGRADE VALUES('D', 60, 69.99);
+INSERT INTO SCGRADE VALUES('F', 0, 59.99);
+COMMIT;
+-------------------------------------------------------
+SELECT T.학번, 
+T.이름, 
+DECODE(T.국어, NULL, '미응시', T.국어) 국어, 
+DECODE(T.영어, NULL, '미응시', T.영어) 영어, 
+DECODE(T.수학, NULL, '미응시', T.수학) 수학, 
+DECODE(T.총점, NULL, '미응시', T.총점) 총점,
+DECODE(T.평균, NULL, '미응시', T.평균) 평균,
+DECODE(SG.GRADE, NULL, '미응시', SG.GRADE) 등급,
+RANK() OVER(ORDER BY T.총점 DESC NULLS LAST) 석차
+FROM (
+SELECT ST.STID 학번, ST.STNAME 이름,
+SUM(DECODE(SC.SUBJECT, '국어', SC.SCORE)) 국어,
+SUM(DECODE(SC.SUBJECT, '영어', SC.SCORE)) 영어,
+SUM(DECODE(SC.SUBJECT, '수학', SC.SCORE)) 수학,
+SUM(SC.SCORE) 총점,
+ROUND(AVG(SC.SCORE), 2) 평균
+FROM STUDENT ST
+LEFT JOIN SCORES SC
+ON ST.STID = SC.STID
+GROUP BY ST.STID, ST.STNAME
+ORDER BY ST.STID, ST.STNAME
+) T
+LEFT JOIN SCGRADE SG
+ON T.평균 BETWEEN SG.LOSCORE AND SG.HIGHSCORE
+;
+------------------------------------------------------------------------------------
+2. ORACLE 11G 방식 PIVOT 명령 사용 : 통계를 생성 -- 일반적으로 집계 함수랑 같이 사용
+-- PIVOT : 로우를 컬럼으로 변환해주는 기능
+학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+1) 학번, 국어, 영어, 수학
+SELECT *
+FROM (
+    SELECT STID 학번, SUBJECT, SCORE
+    FROM SCORES
+)
+PIVOT(
+    SUM(SCORE)
+    FOR SUBJECT IN('국어' AS 국어, '영어' AS 영어, '수학' AS 수학)
+);
+2) 학번, 이름, 국어, 영어, 수학, 총점, 평균, 등급, 석차
+SELECT ST.STID 학번, 
+ST.STNAME 이름,
+DECODE(T.국어, NULL, '미응시', T.국어) 국어, 
+DECODE(T.영어, NULL, '미응시', T.영어) 영어, 
+DECODE(T.수학, NULL, '미응시', T.수학) 수학, 
+(NVL(T.국어,0) + NVL(T.영어, 0) + NVL(T.수학, 0)) 총점, 
+(NVL(T.국어,0) + NVL(T.영어, 0) + NVL(T.수학, 0)) / 3 평균,
+SG.GRADE 등급,
+RANK() OVER(ORDER BY (NVL(T.국어,0) + NVL(T.영어, 0) + NVL(T.수학, 0)) DESC NULLS LAST) 석차
+FROM(
+        SELECT *
+        FROM (
+            SELECT STID, SUBJECT, SCORE
+            FROM SCORES
+        )
+        PIVOT(
+            SUM(SCORE)
+            FOR SUBJECT IN('국어' AS 국어, '영어' AS 영어, '수학' AS 수학)
+        )
+    ) T
+RIGHT JOIN STUDENT ST
+ON T.STID = ST.STID
+LEFT JOIN SCGRADE SG 
+ON (NVL(T.국어,0) + NVL(T.영어, 0) + NVL(T.수학, 0)) / 3 BETWEEN SG.LOSCORE AND SG.HIGHSCORE;
+
+
+
 
 
 
